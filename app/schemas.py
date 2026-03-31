@@ -94,6 +94,7 @@ class TransferCreateSchema(BaseModel):
         return v
 
 
-
+class TotalBalance(BaseModel):
+    total_balance: Decimal
 
 

@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.enum import CurrencyEnum
 from app.models import Operation
 
+
 def create_operation(
     db: Session,
     wallet_id: int,

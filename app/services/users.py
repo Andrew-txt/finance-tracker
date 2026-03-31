@@ -10,4 +10,5 @@ def create_user(db: Session, login: str) -> UserResponse:
     
     user = users_repository.create_user(db, login)
     db.commit()
+    
     return UserResponse.model_validate(user)
