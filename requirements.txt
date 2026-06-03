@@ -1,4 +1,12 @@
+aiohttp==3.13.4
 fastapi==0.135.1
 sqlalchemy==2.0.48
 uvicorn==0.42.0
 pydantic==2.12.5
+pytest==9.0.2
+SQLAlchemy==2.0.48
+uvicorn==0.42.0
+dependency-injector==4.49.0
+pyaml==26.2.1
+
+
