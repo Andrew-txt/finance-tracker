@@ -1,0 +1,22 @@
+# Personal files
+finance.db
+notes.md
+
+# Editor directories and files
+.idea
+
+# OS-Specific System Files
+.DS_Store
+
+# Virtualenv and other Python files
+*venv*/
+.python-version
+
+__pycache__/
+__init__.py
+
+# Specific configuration files
+config.yaml
+
+# Environment secret variables
+.env.*
