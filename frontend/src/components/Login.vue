@@ -34,7 +34,6 @@
 import { useVuelidate } from '@vuelidate/core'
 import { required, email, minLength } from '@vuelidate/validators'
 
-
 export default {
   setup () { 
     const formData = () => this?.form || {}
@@ -93,24 +92,8 @@ export default {
 
 </script>
 
-<!-- <style scoped>
-  .field {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-    width: 25%;
-  }
-  .is-invalid {
-  border-color: #dc3545;
-  }
-
-  .is-invalid ~ .invalid-feedback {
-    display: block;
-  }
-</style> -->
 
 <style> 
-/* Базовый контейнер для всей формы */
 .sign-up {
   max-width: 480px;
   margin: 0 auto;
@@ -130,7 +113,6 @@ export default {
     0 8px 28px rgba(67, 97, 238, 0.08);
 }
 
-/* Группа полей */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -138,14 +120,12 @@ export default {
   margin-bottom: 32px;
 }
 
-/* Контейнер каждого поля */
 .field {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-/* Стили для label */
 .field label {
   font-size: 14px;
   font-weight: 600;
@@ -159,7 +139,6 @@ export default {
   margin-left: 4px;
 }
 
-/* Стили для input */
 .field input {
   padding: 14px 18px;
   font-size: 15px;
@@ -194,7 +173,6 @@ export default {
   background: #fcfdff;
 }
 
-/* Стили для ошибки */
 .field input.is-invalid {
   border-color: #ef476f;
   background: #fff8fa;
@@ -206,7 +184,6 @@ export default {
   box-shadow: 0 0 0 4px rgba(239, 71, 111, 0.15);
 }
 
-/* Сообщение об ошибке */
 .invalid-feedback {
   margin: 4px 0 0 4px;
   font-size: 12px;
@@ -223,7 +200,6 @@ export default {
   80% { transform: translateX(4px); }
 }
 
-/* Кнопка */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -273,12 +249,10 @@ export default {
   outline-offset: 3px;
 }
 
-/* Убираем стандартный outline у инпутов */
 .field input:focus-visible {
   outline: none;
 }
 
-/* Добавляем плавное появление для сообщений об ошибке */
 .invalid-feedback {
   animation: fadeSlideIn 0.3s ease;
 }
@@ -294,7 +268,6 @@ export default {
   }
 }
 
-/* Медиа-запрос для адаптивности */
 @media (max-width: 520px) {
   .sign-up {
     padding: 28px 20px;

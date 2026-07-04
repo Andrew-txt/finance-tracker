@@ -4,15 +4,6 @@
       <h2>{{ title }}</h2>
       
       <div class="fieldc">
-        <label>Choose wallet</label>
-        <input 
-          v-model.trim="form.walletName" 
-          type="text" 
-          required
-        />
-      </div>
-      
-      <div class="fieldc">
         <label>{{ amountLabel }}</label>
         <input 
           v-model.number="form.amount" 
@@ -32,7 +23,7 @@
       
       <!-- Дополнительные поля для конкретных типов -->
       <div v-if="type === 'transfer'" class="fieldc">
-        <label>Destination wallet</label>
+        <label>Enter destination wallet name</label>
         <input 
           v-model.trim="form.destinationWalletName" 
           type="text" 
@@ -54,17 +45,19 @@ export default {
       type: String,
       required: true,
       validator: value => ['income', 'expense', 'transfer'].includes(value)
-    }
+    },
+    walletName: {
+      type: String,
+      required: true
+    },
   },
   emits: ['close', 'submit'],
   data() {
     return {
       form: {
-        walletName: '',
         amount: null,
         description: '',
         destinationWalletName: '',
-        category: ''
       }
     }
   },
@@ -73,7 +66,7 @@ export default {
       const titles = {
         income: 'Add Income',
         expense: 'Add Expense',
-        transfer: 'Transfer Funds'
+        transfer: 'Transfer to another wallet'
       }
       return titles[this.type] || 'Transaction'
     },
@@ -87,8 +80,9 @@ export default {
     }
   },
   methods: {
-    handleSubmit() {
+    handleSubmit() {                  /// вот этот участо смущает, какой то непонятный стек вызовов
       this.$emit('submit', {
+        walletName: this.walletName,
         type: this.type,
         ...this.form
       })
@@ -101,7 +95,6 @@ export default {
     },
     resetForm() {
       this.form = {
-        walletName: '',
         amount: null,
         description: '',
         destinationWalletName: '',

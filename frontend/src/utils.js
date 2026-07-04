@@ -1,5 +1,3 @@
-
-
 export async function handleTransaction (userLogin, walletName, amount, description, type) {
     try {
         const res = await fetch('http://127.0.0.1:8000/api/v1/operations', {
@@ -25,11 +23,9 @@ export async function handleTransaction (userLogin, walletName, amount, descript
         }
 
         return 0
-    } catch (e) {
-        console.error(e)
-    }
+    } catch (e) { console.error(e) }
 }
-
+ 
 
 export async function handleTransfer(userLogin, walletName, destinationWalletName, amount, description) {
     try {
@@ -54,15 +50,6 @@ export async function handleTransfer(userLogin, walletName, destinationWalletNam
         } else {
             throw new Error(`Unprocessable response receieved: ${res.status}`)
         }
-        return 0
-    } catch (e) {
-        console.error(e)
-    }
+        return null
+    } catch (e) { console.error(e) }
 }
-
-
-
-    // wallet_name: str = Field(..., max_length=127)
-    // type: OperationType
-    // amount: int
-    // description: str | None = Field(None, max_length=255)

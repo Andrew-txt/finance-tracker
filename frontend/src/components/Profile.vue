@@ -1,14 +1,7 @@
 <template>
-  <div>
-    <div>
-
-
-
-    </div>
-   
     <h1>Welcome, {{ this.userName }}!</h1>
     <div class="wallets-holder">
-        Your wallets
+        <h2>Your Wallets</h2> 
         <div class="wallet-item" v-for="userWallet in userWallets" :key="userWallet.id">
             <div class="wallet-details">
                 <div class="wallet-name">
@@ -21,28 +14,26 @@
             </div>
             <div class="wallet-operations">
                 <button type="button" class="btn-primary" @click="openModal('income', userWallet.name)">
-                Добавить доход
+                    Add income
                 </button>
                 <button type="button" class="btn-danger" @click="openModal('expense', userWallet.name)">
-                Добавить расход
+                    Add expense
                 </button>
                 <button type="button" class="btn-warning" @click="openModal('transfer', userWallet.name)">
-                Перевести средства
+                    Transfer
                 </button>
-                <TransactionModal
-                    v-for="modal in modals"
-                    :key="modal.type"
-                    :isOpen="modal.isOpen"
-                    :type="modal.type"
-                    @close="closeModal(modal.type)"
-                    @submit="submitForm"
-                />
             </div>
         </div>
+
+        <TransactionModal
+            v-if="currentModal.isOpen"
+            :isOpen="currentModal.isOpen"
+            :type="currentModal.type"
+            :walletName="currentModal.walletName"
+            @close="closeModal"
+            @submit="submitForm"
+        />
     </div>
-
-
-  </div>
 </template>
 
 <script>
@@ -55,33 +46,38 @@ export default {
     },
     data() {
         return {
-            modals: {
-                income: { isOpen: false, type: 'income' },
-                expense: { isOpen: false, type: 'expense' },
-                transfer: { isOpen: false, type: 'transfer' }
+            currentModal: {
+                isOpen: false,
+                type: '',
+                walletName: ''
             },
-            msg: '',
             userName: '',
-     
             userWallets: [],
-            login: localStorage.getItem('userLogin'),
-            isModalOpen: false
-
+            msg: '',
+        }
+    },
+    computed: {
+        activeModals() {
+            return Object.values(this.modals).filter(modal => modal.isOpen)
         }
     },
     async mounted() {
         if (this.getUserLogin()) {
             await this.fetchUserData()
             await this.fetchWallets()
-    
         }
     },
     methods: {
-        openModal(type) {
-            this.modals[type].isOpen = true
+        openModal(type, walletName) {
+            this.currentModal = {
+                isOpen: true,
+                type: type,
+                walletName: walletName
+            }
+            console.log(this.currentModal)
         },
-        closeModal(type) {
-            this.modals[type].isOpen = false
+        closeModal(modalId) {
+            this.currentModal.isOpen = false
         },
         getUserLogin() {
             const userLogin = localStorage.getItem("userLogin")
@@ -90,7 +86,6 @@ export default {
         },
         async fetchUserData() {
             const userLogin = this.getUserLogin()
-            
             try {
                 const res = await fetch('http://127.0.0.1:8000/api/v1/users/me', {
                     method: 'GET',
@@ -105,18 +100,13 @@ export default {
                     return
                 }
                 if (!res.ok) { throw new Error(`Server Error: ${res.status}`) }
-
-                // this.userProfileData = await res.json()
+                
                 const data = await res.json()
                 this.userName = data.name
-                
-            } catch (e) {
-                console.error(e)
-            }
+            } catch (e) { console.error(e) }
         },
         async fetchWallets() {
             const userLogin = this.getUserLogin()
-            
             try {
                 const res = await fetch('http://127.0.0.1:8000/api/v1/wallets', {
                     method: 'GET',
@@ -133,9 +123,7 @@ export default {
                 if (!res.ok) { throw new Error(`Server Error: ${res.status}`) }
 
                 this.userWallets = await res.json()
-            } catch (e) {
-                console.error(e)
-            }
+            } catch (e) { console.error(e) }
         },
         formatBalance(value) {
             if (!value) return '0.00'
@@ -145,7 +133,6 @@ export default {
             return num.toFixed(2);
         },
         async submitForm(transactionData) {
-            console.log(transactionData)
             const userLogin = this.getUserLogin()
 
             if (transactionData.type === 'income') {
@@ -161,11 +148,9 @@ export default {
                     this.msg = "New expense added"
                 }
             } else {
-                this.msg = "Not added"////
+                this.msg = "Not added"
             }
-
         },
     }
-
 }
 </script>
