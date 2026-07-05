@@ -1,5 +1,2 @@
-finance.db
-notes.md
-config.yaml
-
-__pycache__/
+# Root .gitignore file
+.DS_Store

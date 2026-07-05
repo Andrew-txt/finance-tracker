@@ -6,7 +6,7 @@ notes.md
 .idea
 
 # OS-Specific System Files
-.DS_Store
+# .DS_Store
 
 # Virtualenv and other Python files
 *venv*/
