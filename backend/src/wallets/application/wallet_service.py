@@ -14,9 +14,6 @@ class WalletService:
         self.repository = repository
 
     def create(self, wallet_data: CreateWalletDTO, user_id: UUID) -> WalletDTO:
-        if self.repository.is_exists(user_id=user_id, wallet_name=wallet_data.name):
-            raise RepositoryError(f"Wallet {wallet_data.name} already exists")
-
         wallet = Wallet.create(
             user_id=user_id,
             name=wallet_data.name,

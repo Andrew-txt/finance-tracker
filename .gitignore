@@ -1,2 +1,8 @@
 # Root .gitignore file
 .DS_Store
+.pytest_cache
+.vscode
+
+# Personal files
+finance.db
+notes.md

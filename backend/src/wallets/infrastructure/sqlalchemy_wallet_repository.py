@@ -33,15 +33,6 @@ class SQLAlchemyWalletRepository(IWalletRepository):
                 currency=wallet.currency
             )
 
-        def save(self, wallet: Wallet) -> None:
-            repo_wallet = self._from_domain_entity(wallet)
-            
-            with self.session_factory() as session:
-                session.add(repo_wallet)
-                session.commit()
-                
-                return None
-
         def update_balance(self, balance: Decimal, wallet: Wallet) -> None:
             if balance < Decimal(0):
                 raise RepositoryError("Balance cannot be less then zero")
@@ -62,7 +53,7 @@ class SQLAlchemyWalletRepository(IWalletRepository):
                 if not repo_wallet:
                     raise RepositoryError("Not found")
                 return self._to_domain_entity(repo_wallet)
-
+            
         def get_all_wallets(self, user_id: UUID):
             with self.session_factory() as session:
                 repo_wallets = session.query(SQLAlchemyWallet).filter(SQLAlchemyWallet.user_id == user_id).all()
@@ -76,6 +67,19 @@ class SQLAlchemyWalletRepository(IWalletRepository):
                     return True
                 
                 return False
+            
+        def save(self, wallet: Wallet) -> None:
+            repo_wallet = self._from_domain_entity(wallet)
+            
+            if self.is_exists(repo_wallet.user_id, repo_wallet.name):
+                raise RepositoryError(f"Wallet {repo_wallet.name} already exists")
+            
+            with self.session_factory() as session:
+                session.add(repo_wallet)
+                session.commit()
+                
+                return None
+
              
 
 

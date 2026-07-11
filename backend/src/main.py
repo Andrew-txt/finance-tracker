@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from fastapi import HTTPException
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
@@ -25,6 +26,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
  
+@app.get("/health") #
+def healthcheck():
+    return JSONResponse(status_code=status.HTTP_200_OK, content={"status": "healthy"})
+
 app.include_router(wallets_router, prefix="/api/v1")
 app.include_router(operations_router, prefix="/api/v1")
 app.include_router(users_router, prefix="/api/v1")
@@ -38,6 +43,11 @@ container.wire(modules=[
     ])
 
 Base.metadata.create_all(bind=engine)
+
+
+
+
+
 
 # if __name__ == "__main__":
 #     uvicorn.run("src.main:app", host="127.0.0.1", port=8000, reload=True)

@@ -11,7 +11,7 @@ from src.building_blocks.enum import CurrencyEnum, OperationType
 class CreateOperationDTO(BaseModel):
     wallet_name: str = Field(..., max_length=127)
     type: OperationType
-    amount: int
+    amount: Decimal
     description: str | None = Field(None, max_length=255)
 
     @field_validator("amount")

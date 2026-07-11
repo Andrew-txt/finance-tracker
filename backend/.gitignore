@@ -1,7 +1,3 @@
-# Personal files
-finance.db
-notes.md
-
 # Editor directories and files
 .idea
 
@@ -14,6 +10,7 @@ notes.md
 
 __pycache__/
 __init__.py
+.pytest_cache
 
 # Specific configuration files
 config.yaml
