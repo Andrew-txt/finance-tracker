@@ -26,7 +26,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
  
-@app.get("/health") #
+@app.get("/api/v1/health") #
 def healthcheck():
     return JSONResponse(status_code=status.HTTP_200_OK, content={"status": "healthy"})
 
@@ -43,11 +43,6 @@ container.wire(modules=[
     ])
 
 Base.metadata.create_all(bind=engine)
-
-
-
-
-
 
 # if __name__ == "__main__":
 #     uvicorn.run("src.main:app", host="127.0.0.1", port=8000, reload=True)

@@ -1,7 +1,7 @@
 <template>
     <h1>Welcome, {{ this.userName }}!</h1>
     <div class="wallets-holder">
-        <h2>Your Wallets</h2> 
+        <h2>Your Wallets</h2>
         <div class="wallet-item" v-for="userWallet in userWallets" :key="userWallet.id">
             <div class="wallet-details">
                 <div class="wallet-name">
@@ -25,14 +25,8 @@
             </div>
         </div>
 
-        <TransactionModal
-            v-if="currentModal.isOpen"
-            :isOpen="currentModal.isOpen"
-            :type="currentModal.type"
-            :walletName="currentModal.walletName"
-            @close="closeModal"
-            @submit="submitForm"
-        />
+        <TransactionModal v-if="currentModal.isOpen" :isOpen="currentModal.isOpen" :type="currentModal.type"
+            :walletName="currentModal.walletName" @close="closeModal" @submit="submitForm" />
     </div>
 </template>
 
@@ -87,11 +81,11 @@ export default {
         async fetchUserData() {
             const userLogin = this.getUserLogin()
             try {
-                const res = await fetch('http://127.0.0.1:8000/api/v1/users/me', {
+                const res = await fetch('/api/v1/users/me', {
                     method: 'GET',
-                    headers: { 
+                    headers: {
                         'Authorization': `Bearer ${userLogin}`,
-                        'Content-Type': 'application/json' 
+                        'Content-Type': 'application/json'
                     }
                 })
                 if (res.status === 401) {
@@ -100,7 +94,7 @@ export default {
                     return
                 }
                 if (!res.ok) { throw new Error(`Server Error: ${res.status}`) }
-                
+
                 const data = await res.json()
                 this.userName = data.name
             } catch (e) { console.error(e) }
@@ -108,11 +102,11 @@ export default {
         async fetchWallets() {
             const userLogin = this.getUserLogin()
             try {
-                const res = await fetch('http://127.0.0.1:8000/api/v1/wallets', {
+                const res = await fetch('/api/v1/wallets', {
                     method: 'GET',
-                    headers: { 
+                    headers: {
                         'Authorization': `Bearer ${userLogin}`,
-                        'Content-Type': 'application/json' 
+                        'Content-Type': 'application/json'
                     }
                 })
                 if (res.status === 401) {
@@ -128,7 +122,7 @@ export default {
         formatBalance(value) {
             if (!value) return '0.00'
             const num = parseFloat(value);
-            
+
             if (num < 0.000001 && num > 0) return '< 0.000001'
             return num.toFixed(2);
         },

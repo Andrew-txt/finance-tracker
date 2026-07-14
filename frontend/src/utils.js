@@ -1,6 +1,6 @@
 export async function handleTransaction (userLogin, walletName, amount, description, type) {
     try {
-        const res = await fetch('http://127.0.0.1:8000/api/v1/operations', {
+        const res = await fetch('/api/v1/operations', {
             method: 'POST',
             headers: { 
                 'Authorization': `Bearer ${userLogin}`,
@@ -29,7 +29,7 @@ export async function handleTransaction (userLogin, walletName, amount, descript
 
 export async function handleTransfer(userLogin, walletName, destinationWalletName, amount, description) {
     try {
-        const res = await fetch('http://127.0.0.1:8000/api/v1/operations/transfer', {
+        const res = await fetch('/api/v1/operations/transfer', {
             method: 'POST',
             headers: { 
                 'Authorization': `Bearer ${userLogin}`,

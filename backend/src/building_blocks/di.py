@@ -17,7 +17,7 @@ class Container(containers.DeclarativeContainer):
 
     db_engine = providers.Singleton(
         create_engine,
-        url="sqlite:///./finance.db",
+        url="sqlite:///./sqlite_data/finance.db",
         connect_args={"check_same_thread": False}
     )
 

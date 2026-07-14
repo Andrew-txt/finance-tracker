@@ -1,33 +1,25 @@
 <template>
   <h1>I did it! Log in.</h1>
-    <form class="sign-up" @submit.prevent="submitForm">
-      <div class="form-group">
-        <div class="field">
-          <label for="name">Name:</label>
-            <input 
-              id="name"
-              :class="v$.form.userName.$error ? 'is-invalid' : ''"
-              v-model.trim="form.userName"
-            >
-            <p v-if="v$.form.userName.$dirty && v$.form.userName.$invalid" class="invalid-feedback">
-              Required three symbols
-            </p>
-        </div>
-        <div class="field">
-          <label for="login">Login:</label>
-            <input 
-              type="text" 
-              id="login"
-              :class="v$.form.userLogin.$error ? 'is-invalid' : ''"
-              v-model.trim="form.userLogin"
-            >
-            <p v-if="v$.form.userLogin.$dirty && v$.form.userLogin.$invalid" class="invalid-feedback">
-              Required five symbols
-            </p>
-        </div>
-      </div>      
-      <button type="submit" class="btn btn-primary">Сохранить</button>
-    </form>
+  <form class="sign-up" @submit.prevent="submitForm">
+    <div class="form-group">
+      <div class="field">
+        <label for="name">Name:</label>
+        <input id="name" :class="v$.form.userName.$error ? 'is-invalid' : ''" v-model.trim="form.userName">
+        <p v-if="v$.form.userName.$dirty && v$.form.userName.$invalid" class="invalid-feedback">
+          Required three symbols
+        </p>
+      </div>
+      <div class="field">
+        <label for="login">Login:</label>
+        <input type="text" id="login" :class="v$.form.userLogin.$error ? 'is-invalid' : ''"
+          v-model.trim="form.userLogin">
+        <p v-if="v$.form.userLogin.$dirty && v$.form.userLogin.$invalid" class="invalid-feedback">
+          Required five symbols
+        </p>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+  </form>
 </template>
 
 <script>
@@ -35,16 +27,16 @@ import { useVuelidate } from '@vuelidate/core'
 import { required, email, minLength } from '@vuelidate/validators'
 
 export default {
-  setup () { 
+  setup() {
     const formData = () => this?.form || {}
-    return { v$: useVuelidate() } 
+    return { v$: useVuelidate() }
   },
   data() {
     return {
       form: {
         userName: '',
         userLogin: ''
-      }  
+      }
     }
   },
   validations() {
@@ -55,7 +47,21 @@ export default {
       }
     }
   },
+  async mounted() {
+    await this.checkBackendTMP()
+  },
   methods: {
+    async checkBackendTMP() {
+      const res = await fetch('/api/v1/health', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      }
+        
+      )
+      const resDataTMP = await res.text()
+      console.log(resDataTMP)
+
+    },
     async submitForm() {
       this.v$.form.$touch()
       if (this.v$.form.$error) {
@@ -63,44 +69,41 @@ export default {
       } else {
         console.log("Validation passed")
         try {
-            const res = await fetch('http://127.0.0.1:8000/api/v1/users', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: this.form.userName,
-                    login: this.form.userLogin
-                })
+          const res = await fetch('/api/v1/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: this.form.userName,
+              login: this.form.userLogin
             })
-          
-            if (!res.ok) {
-                throw new Error(`Server Error: ${res.status}`)
-            }
-          
-            const data = await res.json()
-            localStorage.setItem("userLogin", data.login)
+          })
 
-            this.$router.push(`/profile`)
+          if (!res.ok) {
+            throw new Error(`Server Error: ${res.status}`)
+          }
+
+          const data = await res.json()
+          localStorage.setItem("userLogin", data.login)
+
+          this.$router.push(`/profile`)
 
         } catch (error) {
-            console.error(error)
+          console.error(error)
         }
       }
     }
   }
 }
-
-
 </script>
 
-
-<style> 
+<style>
 .sign-up {
   max-width: 480px;
   margin: 0 auto;
   padding: 40px 35px;
   background: linear-gradient(145deg, #ffffff 0%, #f8faff 100%);
   border-radius: 24px;
-  box-shadow: 
+  box-shadow:
     0 20px 60px rgba(67, 97, 238, 0.12),
     0 8px 24px rgba(67, 97, 238, 0.06);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -108,7 +111,7 @@ export default {
 }
 
 .sign-up:hover {
-  box-shadow: 
+  box-shadow:
     0 24px 72px rgba(67, 97, 238, 0.18),
     0 8px 28px rgba(67, 97, 238, 0.08);
 }
@@ -161,7 +164,7 @@ export default {
 
 .field input:focus {
   border-color: #4361ee;
-  box-shadow: 
+  box-shadow:
     0 0 0 4px rgba(67, 97, 238, 0.12),
     0 4px 12px rgba(67, 97, 238, 0.08);
   background: #ffffff;
@@ -193,11 +196,27 @@ export default {
 }
 
 @keyframes shakeError {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(6px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-6px);
+  }
+
+  40% {
+    transform: translateX(6px);
+  }
+
+  60% {
+    transform: translateX(-4px);
+  }
+
+  80% {
+    transform: translateX(4px);
+  }
 }
 
 .btn {
@@ -262,6 +281,7 @@ export default {
     opacity: 0;
     transform: translateY(-4px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -274,15 +294,15 @@ export default {
     border-radius: 18px;
     margin: 0 16px;
   }
-  
+
   .field input {
     padding: 12px 16px;
     font-size: 14px;
   }
-  
+
   .btn {
     padding: 14px 24px;
     font-size: 14px;
   }
 }
-</style> 
+</style>

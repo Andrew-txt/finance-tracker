@@ -1,0 +1,29 @@
+services:
+  ft-backend:
+    build:
+      context: ./backend
+    volumes:
+      - sqlite_data:/app/sqlite_data #каталог sqlite_data с данными бд монтируется как volume в контейнер по пути /app/sqlite_data
+    networks:
+      - ft-network
+
+  ft-frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - ft-backend
+    networks:
+      - ft-network
+
+volumes:
+  sqlite_data:
+
+networks:
+  ft-network:
+    driver: bridge
+
+
+    
+
