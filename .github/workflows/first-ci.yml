@@ -10,7 +10,7 @@ on:
 
 jobs:
   Run-ft-backend-container:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
 
     steps:
     - name: Login to Docker Registry
