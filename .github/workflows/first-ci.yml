@@ -9,7 +9,7 @@ on:
       - github-actions-learn
 
 jobs:
-  Run the ft-backend container:
+  Run-ft-backend-container:
     runs-on: ubuntu-latest
 
     steps:
