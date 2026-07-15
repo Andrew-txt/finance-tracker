@@ -9,10 +9,20 @@ on:
       - main
 
 jobs:
-  first-job:
+  Run the ft-backend container:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Do something
-      run: date
+    - name: Login to Docker Registry
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_LOGIN_USERNAME }}
+        password: ${{ secrets.DOCKER_LOGIN_PASSWORD }}
+
+    - name: Pull image and run the container
+      run: docker pull ${{ secrets.DOCKER_IMAGE_NAME }} && docker run -v sqlite_data:/app/sqlite_data ${{ secrets.DOCKER_IMAGE_NAME }}
+
+    - name:
+      run: curl http://0.0.0.0:8000/api/v1/health
+
   
