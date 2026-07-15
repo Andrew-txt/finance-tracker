@@ -1,34 +1,30 @@
-from sqlalchemy.orm import Session
-from fastapi import APIRouter, Request
+from typing import Annotated
+from uuid import UUID
 
-from src.building_blocks.di import get_current_user_id, container
+from fastapi import APIRouter, Depends, Request
+from dependency_injector.wiring import Provide, inject
 
+from src.building_blocks.di import get_current_user_id, Container
 from src.wallets.application.dto import CreateWalletDTO, TotalBalanceDTO, UserWalletsDTO, WalletDTO
 from src.wallets.application.wallet_service import WalletService
-from src.wallets.domain.wallet_repository import IWalletRepository
 
 router = APIRouter()
 
 
-@router.get("/balance", response_model=TotalBalanceDTO) 
-def get_total_balance(request: Request):
-    wallet_service = container.wallet_service()
-    current_user_id = get_current_user_id(request=request)
-    
+@router.get("/wallets/balance", response_model=TotalBalanceDTO) 
+@inject
+def get_total_balance(wallet_service: Annotated[WalletService, Depends(Provide[Container.wallet_service])], current_user_id: UUID = Depends(get_current_user_id)):
     return wallet_service.get_total_balance(user_id=current_user_id)
 
 
 @router.post("/wallets", response_model=WalletDTO)
-def create_wallet(request: Request, wallet_data: CreateWalletDTO) -> WalletDTO:
-    wallet_service = container.wallet_service()
-    current_user_id = get_current_user_id(request=request)
-    
+@inject
+def create_wallet(wallet_data: CreateWalletDTO, wallet_service: Annotated[WalletService, Depends(Provide[Container.wallet_service])], current_user_id: UUID = Depends(get_current_user_id)):
     return wallet_service.create(wallet_data=wallet_data, user_id=current_user_id)
 
 
 @router.get("/wallets", response_model=list[WalletDTO])
-def get_all_wallets(request: Request) -> list[WalletDTO]:
-    wallet_service = container.wallet_service()
-    current_user_id = get_current_user_id(request=request)
-    
+@inject
+def get_all_wallets(wallet_service: Annotated[WalletService, Depends(Provide[Container.wallet_service])], current_user_id: UUID = Depends(get_current_user_id)):
     return wallet_service.get_all_wallets(user_id=current_user_id)
+    

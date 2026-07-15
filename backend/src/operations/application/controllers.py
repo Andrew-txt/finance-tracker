@@ -1,34 +1,29 @@
-from datetime import datetime
-from fastapi import APIRouter, Request
-from sqlalchemy.orm import Session
+from typing import Annotated
+from uuid import UUID
 
-from src.building_blocks.di import get_current_user_id, container
+from fastapi import APIRouter, Depends
+from dependency_injector.wiring import Provide, inject
+
+from src.building_blocks.di import get_current_user_id, Container
 from src.operations.application.dto import CreateOperationDTO, CreateTransferDTO, GetOperationStatisticsDTO, OperationDTO, OperationStatisticsDTO
 from src.operations.application.operation_service import OperationService
-from src.users.application.user_service import UserService
 
 router = APIRouter()
 
 
 @router.post("/operations", response_model=OperationDTO)
-async def create_operation(request: Request, operation_data: CreateOperationDTO) -> OperationDTO:
-     operation_service = container.operation_service()
-     current_user_id = get_current_user_id(request)
-     
+@inject
+async def create_operation(operation_data: CreateOperationDTO, operation_service: Annotated[OperationService, Depends(Provide[Container.operation_service])], current_user_id: UUID = Depends(get_current_user_id)):
      return operation_service.create_operation(operation_data=operation_data, user_id=current_user_id)
 
 
 @router.get("/operations", response_model=OperationStatisticsDTO)
-def get_operations_list(request: Request, operation_data: GetOperationStatisticsDTO) -> OperationStatisticsDTO:
-     operation_service = container.operation_service()
-     current_user_id = get_current_user_id(request)
-
+@inject
+def get_operations_list(operation_data: GetOperationStatisticsDTO, operation_service: Annotated[OperationService, Depends(Provide[Container.operation_service])], current_user_id: UUID = Depends(get_current_user_id)):
      return operation_service.get_operations_list(statistics_data=operation_data, user_id=current_user_id)
 
 
 @router.post("/operations/transfer", response_model=OperationDTO)
-def create_transfer(request: Request, transfer_data: CreateTransferDTO):
-     operation_service = container.operation_service()
-     current_user_id = get_current_user_id(request)
-
+@inject
+def create_transfer(transfer_data: CreateTransferDTO, operation_service: Annotated[OperationService, Depends(Provide[Container.operation_service])], current_user_id: UUID = Depends(get_current_user_id)):
      return operation_service.transfer_between_wallets(transfer_data=transfer_data, user_id=current_user_id)

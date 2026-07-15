@@ -1,5 +1,8 @@
+from typing import Annotated
+
 from dependency_injector import containers, providers
-from fastapi import HTTPException, Request
+from dependency_injector.wiring import Provide, inject
+from fastapi import Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy import create_engine
@@ -14,17 +17,18 @@ from src.wallets.infrastructure.sqlalchemy_wallet_repository import SQLAlchemyWa
 
 
 class Container(containers.DeclarativeContainer):
+    config = providers.Configuration(yaml_files=['./config.yaml'])
 
     db_engine = providers.Singleton(
         create_engine,
-        url="sqlite:///./sqlite_data/finance.db",
-        connect_args={"check_same_thread": False}
+        url=config.db.url,
+        connect_args=config.db.connect_args
     )
 
     db_session_factory = providers.Singleton(  
         sessionmaker,
-        autocommit=False,
-        autoflush=False,
+        autocommit=config.db.session.autocommit,
+        autoflush=config.db.session.autoflush,
         bind=db_engine
     )
 
@@ -59,24 +63,20 @@ class Container(containers.DeclarativeContainer):
         repository=wallet_repository
     )
 
-container = Container()
 
 security = HTTPBearer()
 
-
-def get_current_user_id(request: Request):
+@inject
+def get_current_user_id(request: Request, user_service: Annotated[UserService, Depends(Provide[Container.user_service])]):
     auth_header = request.headers.get("Authorization")
     
     if not auth_header or not auth_header.startswith("Bearer "):
         raise HTTPException(
             status_code=401, detail="Unauthorized")
-
     credentials = auth_header.replace("Bearer ", "")
     
-    user_repository = container.user_repository()
-    user = user_repository.get(user_login=credentials)
+    user = user_service.get(user_login=credentials)
     
     if not user:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    
     return user.id
