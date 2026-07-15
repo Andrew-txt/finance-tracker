@@ -3,10 +3,10 @@ name: main
 on:
   push:
     branches:
-      - main
+      - github-actions-learn
   pull_request:
     branches:
-      - main
+      - github-actions-learn
 
 jobs:
   Run the ft-backend container:
