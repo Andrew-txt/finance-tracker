@@ -1,0 +1,19 @@
+name: actions-learn
+
+on:
+  push:
+    branches:
+      - github-actions-learn
+  pull_request:
+    branches:
+      - github-actions-learn
+
+jobs:
+  say-hello-action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/hello-world-javascript-action@main
+        with:
+          who-to-greet: "Github from an action"
+
+  
