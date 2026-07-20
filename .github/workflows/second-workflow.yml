@@ -1,0 +1,33 @@
+name: second-workflow
+
+on: 
+    workflow_run: 
+        workflows: [actions-learn]
+        types:
+            - completed
+
+jobs:
+    echo-something:
+        runs-on: ubuntu-latest
+        steps:
+        - name: 
+          run: echo "Hi"
+
+
+
+
+# name: second-workflow
+
+# on:
+#   workflow_run:
+#     workflows: [actions-learn]
+#     types:
+#       - completed
+
+
+
+
+
+
+
+
