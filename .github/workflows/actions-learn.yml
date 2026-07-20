@@ -1,17 +1,16 @@
 name: actions-learn
 
 on:
-  workflow_dispatch:
-  # push:
-  #   branches:
-  #     - github-actions-learn
-  #   paths: 
-  #     - "!filters/*.md"
-  #     - "filters/*.txt"
+  push:
+    branches:
+      - github-actions-learn
+    # paths: 
+    #   - "!filters/*.md"
+    #   - "filters/*.txt"
 
-  # pull_request:
-  #   branches:
-  #     - github-actions-learn
+  pull_request:
+    branches:
+      - github-actions-learn
 
 jobs:
   say-hello-job-1:
