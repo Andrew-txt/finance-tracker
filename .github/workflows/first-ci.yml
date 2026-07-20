@@ -1,28 +1,28 @@
-name: main
+# name: main
 
-on:
-  push:
-    branches:
-      - github-actions-learn
-  pull_request:
-    branches:
-      - github-actions-learn
+# on:
+#   push:
+#     branches:
+#       - github-actions-learn
+#   pull_request:
+#     branches:
+#       - github-actions-learn
 
-jobs:
-  Run-ft-backend-container:
-    runs-on: ubuntu-24.04-arm
+# jobs:
+#   Run-ft-backend-container:
+#     runs-on: ubuntu-24.04-arm
 
-    steps:
-    - name: Login to Docker Registry
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_LOGIN_USERNAME }}
-        password: ${{ secrets.DOCKER_LOGIN_PASSWORD }}
+#     steps:
+#     - name: Login to Docker Registry
+#       uses: docker/login-action@v3
+#       with:
+#         username: ${{ secrets.DOCKER_LOGIN_USERNAME }}
+#         password: ${{ secrets.DOCKER_LOGIN_PASSWORD }}
 
-    - name: Pull image and run the container
-      run: docker pull ${{ secrets.DOCKER_IMAGE_NAME }} && docker run -v sqlite_data:/app/sqlite_data ${{ secrets.DOCKER_IMAGE_NAME }}
+#     - name: Pull image and run the container
+#       run: docker pull ${{ secrets.DOCKER_IMAGE_NAME }} && docker run -v sqlite_data:/app/sqlite_data ${{ secrets.DOCKER_IMAGE_NAME }}
 
-    - name:
-      run: curl http://0.0.0.0:8000/api/v1/health
+#     - name:
+#       run: curl http://0.0.0.0:8000/api/v1/health
 
   
