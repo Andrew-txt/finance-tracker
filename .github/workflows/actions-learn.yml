@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - github-actions-learn
+    paths: 
+      - "!filters/*.md"
+      - "filters/*.txt"
+
   pull_request:
     branches:
       - github-actions-learn
@@ -30,5 +34,7 @@ jobs:
     needs:
       - say-hello-job-1
       - job-2
+
+  
 
   
