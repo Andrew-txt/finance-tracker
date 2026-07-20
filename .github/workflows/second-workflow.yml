@@ -2,9 +2,10 @@ name: second-workflow
 
 on: 
   workflow_run: 
-    workflows: [actions-learn]
-    types:
-    - completed
+    workflows: ["actions-learn"]
+    types: [completed]
+    branches:
+      - github-actions-learn
 
 jobs:
   echo-something:
