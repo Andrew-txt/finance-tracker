@@ -1,6 +1,7 @@
 name: actions-learn
 
 on:
+  workflow_dispatch: 
   push:
     branches:
       - github-actions-learn
@@ -9,12 +10,6 @@ on:
       - github-actions-learn
 
 jobs:
-  # say-hello-job-1:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/hello-world-javascript-action@main
-  #       with:
-  #         who-to-greet: "Github from an action"
   job-1:
     runs-on: ubuntu-latest
     steps:
