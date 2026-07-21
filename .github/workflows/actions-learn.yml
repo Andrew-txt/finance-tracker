@@ -1,40 +1,32 @@
 name: actions-learn
 
 on:
-  workflow_dispatch:
-  # push:
-  #   branches:
-  #     - github-actions-learn
-  #   # paths: 
-  #   #   - "!filters/*.md"
-  #   #   - "filters/*.txt"
-
-  # pull_request:
-  #   branches:
-  #     - github-actions-learn
+  push:
+    branches:
+      - github-actions-learn
+  pull_request:
+    branches:
+      - github-actions-learn
 
 jobs:
-  say-hello-job-1:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/hello-world-javascript-action@main
-        with:
-          who-to-greet: "Github from an action"
-  job-2:
+  # say-hello-job-1:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/hello-world-javascript-action@main
+  #       with:
+  #         who-to-greet: "Github from an action"
+  job-1:
     runs-on: ubuntu-latest
     steps:
       - run: print("Hello from a job-2")
         shell: python
-    needs:
-      - say-hello-job-1 
 
-  job-3:
+  job-2:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Hello from a job-3"
     needs:
-      - say-hello-job-1
-      - job-2
+      - job-1
 
   
 
