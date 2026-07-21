@@ -3,27 +3,16 @@ name: second-workflow
 on: 
   workflow_run: 
     workflows: ["actions-learn"]
-    types: [completed]
-    branches:
-      - github-actions-learn
+    types: 
+      - completed
+    # branches:
+    #   - github-actions-learn
 
 jobs:
   echo-something:
     runs-on: ubuntu-latest
     steps:
-    - name: 
-      run: echo "Hi"
-
-
-
-
-# name: second-workflow
-
-# on:
-#   workflow_run:
-#     workflows: [actions-learn]
-#     types:
-#       - completed
+      - run: echo "Hi"
 
 
 
