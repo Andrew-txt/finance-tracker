@@ -34,11 +34,11 @@ jobs:
 
     - name: Test connection
       run: |
-        docker ps -a
         ss -tulpn
-        curl -v http://localhost/api/v1/health
+        
         docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health
-      
+        docker logs finance-tracker-ft-backend-1
+        docker logs finance-tracker-ft-backend-1 > logs.txt && cat logs.txt
       
       
 
