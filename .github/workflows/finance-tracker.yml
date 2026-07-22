@@ -38,8 +38,8 @@ jobs:
 
     - name: Try connect
       run: |
-        ls /etc/nginx/conf.d > 'conf-dir-ls.txt'
-        cat /etc/nginx/conf.d/default.conf > default-conf-cat.txt'
+        ls /etc/nginx/conf.d > './logs/personal/conf-dir-ls.txt'
+        cat /etc/nginx/conf.d/default.conf > './logs/personal/default-conf-cat.txt'
         ss -tulpn
 
         echo "TRY FROM THE OUTSIDE"
