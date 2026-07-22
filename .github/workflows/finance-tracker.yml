@@ -42,6 +42,7 @@ jobs:
 
         echo "TRY FROM THE OUTSIDE"
         curl -v http://0.0.0.0:8080/api/v1/health || curl -v http://localhost:8080/api/v1/health
+        curl -v http://localhost:8080/api/v1/health
         
         
     - name: Collect logs
