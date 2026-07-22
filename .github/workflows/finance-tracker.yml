@@ -32,11 +32,16 @@ jobs:
     - name: Start services
       run: docker compose up -d
 
-    - name: Test connection
-      run: |
-        docker compose logs ft-backend
-        
-      
+    - name: Collect logs
+      uses: step-security/gh-docker-logs@v2
+      with:
+        dest: './logs'
+
+    - name: Upload logs
+      uses: actions/upload-artifact@v4
+      with: 
+        name: logs
+        path: ./logs
       
 
 
