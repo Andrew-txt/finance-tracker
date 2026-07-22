@@ -10,12 +10,10 @@
 
 __pycache__/
 __init__.py
-.pytest_cache
 
 # Specific configuration files
 
 # Environment secret variables
-.env.*
 
 # Database files
 sqlite_data

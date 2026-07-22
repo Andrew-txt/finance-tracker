@@ -1,8 +1,14 @@
 # Root .gitignore file
+
+# OS-Specific System Files
 .DS_Store
+
 .pytest_cache
 .vscode
 
 # Personal files
-
 notes.md
+
+# Environment secret variables
+.env.*
+.env

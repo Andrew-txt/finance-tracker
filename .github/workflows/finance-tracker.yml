@@ -1,0 +1,42 @@
+# сделать новую ветку чтоб протестировать workflow
+
+name: Launch and Test
+
+on: 
+  workflow_dispatch: 
+  push:
+    branches:
+      - new-workflow-features
+  pull_request:
+    branches:
+      - new-workflow-features
+
+jobs:
+  launch:
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+    - name: Login to Docker Registry
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_LOGIN_USERNAME }}
+        password: ${{ secrets.DOCKER_LOGIN_PASSWORD }}
+
+    - name: Checkout Compose file
+      uses: actions/checkout@v7
+      with:
+        sparse-checkout: |
+          docker-compose.yml
+        sparse-checkout-cone-mode: false
+
+    - name: Start services
+      run: docker compose up -d
+
+    - name: Test connection
+      run: curl http://localhost/api/v1/health
+
+
+
+
+
+

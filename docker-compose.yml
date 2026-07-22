@@ -1,15 +1,13 @@
 services:
   ft-backend:
-    build:
-      context: ./backend
+    image: andrewtxt/docker.repo:ft-backend-1.0
     volumes:
-      - sqlite_data:/app/sqlite_data #каталог sqlite_data с данными бд монтируется как volume в контейнер по пути /app/sqlite_data
+      - sqlite_data:/app/sqlite_data            # The sqlite_data directory containing the database data is mounted as a volume into the container at the path /app/sqlite_data. (root notes.md:16)
     networks:
       - ft-network
 
   ft-frontend:
-    build:
-      context: ./frontend
+    image: andrewtxt/docker.repo:ft-frontend-1.0
     ports:
       - "80:80"
     depends_on:
