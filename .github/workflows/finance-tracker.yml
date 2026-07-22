@@ -38,6 +38,7 @@ jobs:
 
     - name: Try connect
       run: |
+        ls /etc/nginx/conf.d
         ss -tulpn
 
         echo "TRY FROM THE OUTSIDE"
