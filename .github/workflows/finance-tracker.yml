@@ -43,9 +43,6 @@ jobs:
         docker inspect finance-tracker-ft-frontend-1 --format='{{.NetworkSettings.Networks}}'
         docker inspect finance-tracker-ft-backend-1 --format='{{.NetworkSettings.Networks}}'
 
-        echo "TRY FROM THE INSIDE OF A CONTAINER"
-        docker exec finance-tracker-ft-frontend-1 curl -v http://localhost/api/v1/health 
-        docker exec finance-tracker-ft-frontend-1 curl -v http://172.18.0.2:8000/api/v1/health
         
 
         echo "TRY FROM THE OUTSIDE"
@@ -62,6 +59,12 @@ jobs:
       with: 
         name: logs
         path: ./logs
+
+
+
+      # echo "TRY FROM THE INSIDE OF A CONTAINER"
+      # docker exec finance-tracker-ft-frontend-1 curl -v http://localhost/api/v1/health 
+      # docker exec finance-tracker-ft-frontend-1 curl -v http://172.18.0.2:8000/api/v1/health
       
 
 
