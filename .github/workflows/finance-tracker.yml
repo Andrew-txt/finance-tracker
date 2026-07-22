@@ -38,8 +38,12 @@ jobs:
 
     - name: Try connect
       run: |
-        docker exec finance-tracker-ft-frontend-1 ping -c 2 ft-backend && docker exec finance-tracker-ft-frontend-1 nslookup ft-backend
-        docker exec finance-tracker-ft-frontend-1 cat /etc/hosts
+        echo "THROUGH NETWORK"
+        docker run --rm --network finance-tracker_ft-network curlimages/curl -f http://ft-frontend:80/api/v1/health
+
+        echo "CHECK NETWORKS"
+        docker inspect ft-backend --format='{{.NetworkSettings.Networks}}'
+        docker inspect ft-frontend --format='{{.NetworkSettings.Networks}}'
         
     - name: Collect logs
       uses: jwalton/gh-docker-logs@v2
