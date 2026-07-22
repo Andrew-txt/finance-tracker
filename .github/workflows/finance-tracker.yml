@@ -35,10 +35,8 @@ jobs:
     - name: Try connect
       run: curl -v http://localhost/api/v1/health
       
-    - name: Check state
-      run: |
-        docker ps -a
-        docker inspect finance-tracker-ft-backend-1
+    - name: Check nework settings
+      run: docker network inspect finance-tracker_ft-network
 
     - name: Collect logs
       uses: jwalton/gh-docker-logs@v2
