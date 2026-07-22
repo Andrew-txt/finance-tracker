@@ -1,4 +1,6 @@
 # сделать новую ветку чтоб протестировать workflow
+# docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health -- не видит: connection refused
+        
 
 name: Launch and Test
 
@@ -34,9 +36,6 @@ jobs:
 
     - name: Try connect
       run: |
-        echo "DIRECTLY"
-        docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health
-        
         echo "NETWORK"
         docker run --rm --network finance-tracker_ft-network curlimages/curl -f http://ft-backend:8000/api/v1/health
 
