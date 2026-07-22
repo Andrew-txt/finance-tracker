@@ -33,7 +33,7 @@ jobs:
       run: docker compose up -d
 
     - name: Test connection
-      run: curl -v http://localhost/api/v1/health || docker exec finance-tracker-ft-frontend-1 curl -v http://localhost/api/v1/health
+      run: curl -v http://localhost/api/v1/health || docker exec finance-tracker-ft-frontend-1 curl -v http://localhost/api/v1/health && docker logs --tail 10 finance-tracker-ft-backend-1
 
 
 
