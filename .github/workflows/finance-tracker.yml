@@ -34,9 +34,8 @@ jobs:
 
     - name: Test connection
       run: |
-        ss -tulpn
-        docker logs finance-tracker-ft-backend-1
-        docker logs finance-tracker-ft-backend-1 > logs.txt && cat logs.txt
+        docker logs finance-tracker-ft-backend-1 > logs.txt 
+        cat logs.txt
       
       
 
