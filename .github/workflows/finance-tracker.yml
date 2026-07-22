@@ -33,10 +33,12 @@ jobs:
       run: docker compose up -d
 
     - name: Try connect
-      run: curl -v http://localhost/api/v1/health
-      
-    - name: Check nework settings
-      run: docker network inspect finance-tracker_ft-network
+      run: |
+        echo "DIRECTLY"
+        docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health
+        
+        echo "NETWORK"
+        docker run --rm --network finance-tracker_ft-network curlimages/curl -f http://ft-backend:8000/api/v1/health
 
     - name: Collect logs
       uses: jwalton/gh-docker-logs@v2
