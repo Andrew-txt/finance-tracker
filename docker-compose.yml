@@ -5,11 +5,20 @@ services:
       - sqlite_data:/app/sqlite_data            # The sqlite_data directory containing the database data is mounted as a volume into the container at the path /app/sqlite_data. (root notes.md:16)
     networks:
       - ft-network
+    expose:
+      - "8000"
 
   ft-frontend:
     image: andrewtxt/docker.repo:ft-frontend-1.0
+    healthcheck:
+      test: curl http://localhost/api/v1/health
+      interval: 60s
+      timeout: 10s
+      retries: 2
     ports:
-      - "80:80"
+      - "8080:80"
+    expose:
+      - "80"
     depends_on:
       - ft-backend
     networks:
