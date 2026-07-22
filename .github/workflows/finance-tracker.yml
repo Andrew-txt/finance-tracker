@@ -33,7 +33,7 @@ jobs:
       run: docker compose up -d
 
     - name: Collect logs
-      uses: step-security/gh-docker-logs@v2
+      uses: jwalton/gh-docker-logs@v2
       with:
         dest: './logs'
 
