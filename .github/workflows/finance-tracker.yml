@@ -34,7 +34,7 @@ jobs:
 
     - name: Test connection
       run: |
-        docker compose logs ft-backend-1 
+        docker compose logs ft-backend
         
       
       
