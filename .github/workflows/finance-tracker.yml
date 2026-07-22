@@ -4,6 +4,7 @@
 # docker run --rm --network finance-tracker_ft-network curlimages/curl -f http://ft-backend:8000/api/v1/health
 
  # docker exec finance-tracker-ft-frontend-1 cat /etc/hosts
+ # docker exec finance-tracker-ft-frontend-1 nslookup ft-backend
 name: Launch and Test
 
 on: 
@@ -38,7 +39,6 @@ jobs:
 
     - name: Try connect
       run: |
-        docker exec finance-tracker-ft-frontend-1 nslookup ft-backend
         docker exec finance-tracker-ft-frontend-1 ping -c 2 ft-backend
 
     - name: Collect logs
