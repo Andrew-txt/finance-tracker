@@ -152,43 +152,43 @@ jobs:
       run: curl -v http://localhost:8080/api/v1/health
 
 
-  launch-with-outer-ping-out-no-how: 
-    runs-on: ubuntu-24.04-arm
+  # launch-with-outer-ping-out-no-how: 
+  #   runs-on: ubuntu-24.04-arm
     
-    steps:
-    - name: Login to Docker Registry
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_LOGIN_USERNAME }}
-        password: ${{ secrets.DOCKER_LOGIN_PASSWORD }}
+  #   steps:
+  #   - name: Login to Docker Registry
+  #     uses: docker/login-action@v3
+  #     with:
+  #       username: ${{ secrets.DOCKER_LOGIN_USERNAME }}
+  #       password: ${{ secrets.DOCKER_LOGIN_PASSWORD }}
     
-    - name: Checkout Compose file
-      uses: actions/checkout@v7
-      with:
-        sparse-checkout: |
-          docker-compose.yml
-        sparse-checkout-cone-mode: false
+  #   - name: Checkout Compose file
+  #     uses: actions/checkout@v7
+  #     with:
+  #       sparse-checkout: |
+  #         docker-compose.yml
+  #       sparse-checkout-cone-mode: false
     
-    - name: Start services
-      run: docker compose up -d
+  #   - name: Start services
+  #     run: docker compose up -d
 
-    - name: Check neighs before ping (3)
-      run: |
-        echo "=== ARP TABLE CONTENT ==="
-        docker exec finance-tracker-ft-frontend-1 ip neigh show | column -t || echo "TABLE IS EMPTY"
-        echo "=== END OF ARP TABLE ==="
+  #   - name: Check neighs before ping (3)
+  #     run: |
+  #       echo "=== ARP TABLE CONTENT ==="
+  #       docker exec finance-tracker-ft-frontend-1 ip neigh show | column -t || echo "TABLE IS EMPTY"
+  #       echo "=== END OF ARP TABLE ==="
   
-    - name: Ping frontend
-      run: ping -c 3 localhost
+  #   - name: Ping frontend
+  #     run: ping -c 3 localhost
 
-    - name: Check neighs after ping (3)
-      run: |
-        echo "=== ARP TABLE CONTENT ==="
-        docker exec finance-tracker-ft-frontend-1 ip neigh show | column -t || echo "TABLE IS EMPTY"
-        echo "=== END OF ARP TABLE ==="
+  #   - name: Check neighs after ping (3)
+  #     run: |
+  #       echo "=== ARP TABLE CONTENT ==="
+  #       docker exec finance-tracker-ft-frontend-1 ip neigh show | column -t || echo "TABLE IS EMPTY"
+  #       echo "=== END OF ARP TABLE ==="
     
-    - name: Check from outside (3) 
-      run: curl -v http://localhost:8080/api/v1/health
+  #   - name: Check from outside (3) 
+  #     run: curl -v http://localhost:8080/api/v1/health
 
 
   # launch-with-outer-ping: # outer ping fails
