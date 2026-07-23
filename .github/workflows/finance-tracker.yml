@@ -38,6 +38,7 @@ jobs:
 
     - name: Try connect
       run: |
+        mkdir -p ./logs/personal/
         ls /etc/nginx/conf.d > './logs/personal/conf-dir-ls.txt'
         cat /etc/nginx/conf.d/default.conf > './logs/personal/default-conf-cat.txt'
         ss -tulpn
