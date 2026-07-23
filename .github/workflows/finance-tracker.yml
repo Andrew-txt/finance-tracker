@@ -37,10 +37,10 @@ jobs:
 
     - name: Try connect
       run: |
-        docker exec finance-tracker-ft-frontend-1 nc -zv ft-backend 8000 ||  docker exec finance-tracker-ft-frontend-1 telnet ft-backend 8000
-        docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health
+        docker exec finance-tracker-ft-frontend-1 nc -zv ft-backend 8000 
         docker exec finance-tracker-ft-frontend-1 ping -c 3 ft-backend
-
+        docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health
+        
         echo "TRY FROM THE OUTSIDE"
         curl -v http://localhost:8080/api/v1/health 
         
