@@ -6,7 +6,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 3s
+      start_period: 5s
     volumes:
       - sqlite_data:/app/sqlite_data            # The sqlite_data directory containing the database data is mounted as a volume into the container at the path /app/sqlite_data. (root notes.md:16)
     networks:
