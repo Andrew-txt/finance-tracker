@@ -15,7 +15,7 @@ on:
       - new-workflow-features
 
 jobs:
-  launch:
+  launch-without-ping:
     runs-on: ubuntu-24.04-arm
 
     steps:
@@ -41,8 +41,8 @@ jobs:
     - name: Curl health endpoint from frontend directly # работает 
       run: docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health
 
-    - name: Check from outside # не работет без ping перед ним
-      run: curl -v http://localhost:8080/api/v1/health
+    # - name: Check from outside # не работет без ping перед ним
+    #   run: curl -v http://localhost:8080/api/v1/health
 
 
 
@@ -73,15 +73,87 @@ jobs:
         name: logs
         path: ./logs
 
-
-
       # echo "TRY FROM THE INSIDE OF A CONTAINER"
       # docker exec finance-tracker-ft-frontend-1 curl -v http://localhost/api/v1/health 
       # docker exec finance-tracker-ft-frontend-1 curl -v http://172.18.0.2:8000/api/v1/health
       
+  launch-with-ping:
+    runs-on: ubuntu-24.04-arm
+    
+    steps:
+    - name: Login to Docker Registry
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_LOGIN_USERNAME }}
+        password: ${{ secrets.DOCKER_LOGIN_PASSWORD }}
+    
+    - name: Checkout Compose file
+      uses: actions/checkout@v7
+      with:
+        sparse-checkout: |
+          docker-compose.yml
+        sparse-checkout-cone-mode: false
+    
+    - name: Start services
+      run: docker compose up -d
+      
+    - name: Ping backend from frontend (1)
+      run: docker exec finance-tracker-ft-frontend-1 ping -c 3 ft-backend
+      
+    - name: Curl health endpoint from frontend directly (1)  
+      run: docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health
 
 
+  launch-with-ping-out:
+    runs-on: ubuntu-24.04-arm
+    
+    steps:
+    - name: Login to Docker Registry
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_LOGIN_USERNAME }}
+        password: ${{ secrets.DOCKER_LOGIN_PASSWORD }}
+    
+    - name: Checkout Compose file
+      uses: actions/checkout@v7
+      with:
+        sparse-checkout: |
+          docker-compose.yml
+        sparse-checkout-cone-mode: false
+    
+    - name: Start services
+      run: docker compose up -d
+      
+    - name: Ping backend from frontend (2)
+      run: docker exec finance-tracker-ft-frontend-1 ping -c 3 ft-backend
+      
+    - name: Check from outside (2) 
+      run: curl -v http://localhost:8080/api/v1/health
 
 
-
+  launch-without-ping-out:
+    runs-on: ubuntu-24.04-arm
+    
+    steps:
+    - name: Login to Docker Registry
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_LOGIN_USERNAME }}
+        password: ${{ secrets.DOCKER_LOGIN_PASSWORD }}
+    
+    - name: Checkout Compose file
+      uses: actions/checkout@v7
+      with:
+        sparse-checkout: |
+          docker-compose.yml
+        sparse-checkout-cone-mode: false
+    
+    - name: Start services
+      run: docker compose up -d
+      
+    # - name: Ping backend from frontend (2)
+    #   run: docker exec finance-tracker-ft-frontend-1 ping -c 3 ft-backend
+      
+    - name: Check from outside (3) 
+      run: curl -v http://localhost:8080/api/v1/health
 
