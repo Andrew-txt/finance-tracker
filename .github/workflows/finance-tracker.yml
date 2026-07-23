@@ -35,15 +35,15 @@ jobs:
     - name: Start services
       run: docker compose up -d
     
-    - name: Ping backend from frontend
-      run: docker exec finance-tracker-ft-frontend-1 ping -c 3 ft-backend
+    # - name: Ping backend from frontend
+    #   run: docker exec finance-tracker-ft-frontend-1 ping -c 3 ft-backend
 
     - name: Check from outside
       run: curl -v http://localhost:8080/api/v1/health
-    # - name: Curl health endpoint from frontend directly
+    # - name: Curl health endpoint from frontend directly - работает 
     #   run: docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health
-    - name: Curl health endpoint from frontend through nginx
-      run: docker exec finance-tracker-ft-frontend-1 curl -v http://ft-frontend:80/api/v1/health
+    # - name: Curl health endpoint from frontend through nginx -работает
+    #   run: docker exec finance-tracker-ft-frontend-1 curl -v http://ft-frontend:80/api/v1/health
       # or run: docker exec finance-tracker-ft-frontend-1 curl -v http://localhost:80/api/v1/health
       
 
