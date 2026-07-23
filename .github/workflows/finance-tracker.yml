@@ -147,20 +147,30 @@ jobs:
     
     - name: Start services
       run: docker compose up -d
+
+    - name: Warm up
+      run: |
+        docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/health || true
+        sleep 3
+    - name: Health check
+      run: curl -f http://localhost:8080/api/v1/health
+
+
       
-    - name: Check from outside (3) 
-      run: curl -v http://localhost:8080/api/v1/health
+      
+    # - name: Check from outside (3) 
+    #   run: curl -v http://localhost:8080/api/v1/health
 
-    - name: Collect logs
-      uses: jwalton/gh-docker-logs@v2
-      with:
-        dest: './logs'
+    # - name: Collect logs
+    #   uses: jwalton/gh-docker-logs@v2
+    #   with:
+    #     dest: './logs'
 
-    - name: Upload logs
-      uses: actions/upload-artifact@v4
-      with: 
-        name: logs
-        path: ./logs
+    # - name: Upload logs
+    #   uses: actions/upload-artifact@v4
+    #   with: 
+    #     name: logs
+    #     path: ./logs
 
 
   # launch-with-outer-ping-out-no-how: 
