@@ -71,13 +71,13 @@ jobs:
       run: docker compose up -d
 
     - name: Check neighs before ping
-      run: docker exec finance-tracker-ft-frontend-1 ip neigh show | column -t
+      run: docker exec finance-tracker-ft-frontend-1 ip neigh show | column -t || echo "TABLE IS EMPTY"
       
     - name: Ping backend from frontend (1)
       run: docker exec finance-tracker-ft-frontend-1 ping -c 3 ft-backend
 
     - name: Check neighs after ping
-      run: docker exec finance-tracker-ft-frontend-1 ip neigh show | column -t
+      run: docker exec finance-tracker-ft-frontend-1 ip neigh show | column -t || echo "TABLE IS EMPTY"
     
     - name: Curl health endpoint from frontend directly (1)  
       run: docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health
