@@ -128,7 +128,7 @@ jobs:
       run: curl -v http://localhost:8080/api/v1/health
 
 
-  launch-with-outer-ping-out: # outer ping fails
+  launch-with-outer-ping-out: 
     runs-on: ubuntu-24.04-arm
     
     steps:
@@ -149,7 +149,7 @@ jobs:
       run: docker compose up -d
   
     - name: Ping frontend
-      run: ping -c 3 http://localhost:8080/api/v1/health
+      run: ping -c 3 localhost
     
     - name: Check from outside (3) 
       run: curl -v http://localhost:8080/api/v1/health
@@ -176,7 +176,7 @@ jobs:
       run: docker compose up -d
   
     - name: Ping frontend
-      run: ping -c 3 http://localhost:8080/api/v1/health
+      run: ping -c 3 localhost
       
     - name: Curl health endpoint from frontend directly (3)  
       run: docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health
