@@ -3,10 +3,10 @@ services:
     image: andrewtxt/docker.repo:ft-backend-1.0
     healthcheck:
       test: ["CMD", "curl", "http://localhost:8000/api/v1/health"]
-      interval: 30s
-      timeout: 10s
+      interval: 10s
+      timeout: 5s
       retries: 5
-      start_period: 10s
+      start_period: 3s
     volumes:
       - sqlite_data:/app/sqlite_data            # The sqlite_data directory containing the database data is mounted as a volume into the container at the path /app/sqlite_data. (root notes.md:16)
     networks:
