@@ -46,7 +46,6 @@ jobs:
         curl -v http://localhost:8080/favicon.ico
         curl -v http://localhost:8080/api/v1/health 
         
-        
     - name: Collect logs
       uses: jwalton/gh-docker-logs@v2
       with:
