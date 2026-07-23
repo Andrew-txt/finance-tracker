@@ -41,7 +41,7 @@ jobs:
     # - name: Curl health endpoint from frontend directly
     #   run: docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health
     - name: Curl health endpoint from frontend through nginx
-      run: curl -v http://ft-frontend:8080/api/v1/health
+      run: docker exec finance-tracker-ft-frontend-1 curl -v http://ft-frontend:8080/api/v1/health
       
     - name: Check from outside
       run: curl -v http://localhost:8080/api/v1/health
