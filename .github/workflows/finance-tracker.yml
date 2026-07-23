@@ -34,10 +34,6 @@ jobs:
 
     - name: Start services
       run: docker compose up -d
-
-    
-    - name: Check backend connectivity from frontend
-      run: docker exec finance-tracker-ft-frontend-1 nc -zv ft-backend 8000
     
     - name: Ping backend from frontend
       run: docker exec finance-tracker-ft-frontend-1 ping -c 3 ft-backend
