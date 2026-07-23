@@ -1,10 +1,8 @@
 # сделать новую ветку чтоб протестировать workflow
 # docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health -- не видит: connection refused
 # echo "NETWORK"
-# docker run --rm --network finance-tracker_ft-network curlimages/curl -f http://ft-backend:8000/api/v1/health
 
-# cat /etc/nginx/conf.d/default.conf > './logs/personal/default-conf-cat.txt'
-
+# docker exec finance-tracker-ft-frontend-1 nslookup ft-backend   -- server cant find
 name: Launch and Test
 
 on: 
@@ -39,7 +37,6 @@ jobs:
 
     - name: Try connect
       run: |
-        docker exec finance-tracker-ft-frontend-1 nslookup ft-backend   
         docker exec finance-tracker-ft-frontend-1 nc -zv ft-backend 8000 ||  docker exec finance-tracker-ft-frontend-1 telnet ft-backend 8000
         docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health
         docker exec finance-tracker-ft-frontend-1 ping -c 3 ft-backend
