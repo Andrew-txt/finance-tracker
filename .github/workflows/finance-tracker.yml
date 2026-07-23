@@ -15,7 +15,7 @@ on:
       - new-workflow-features
 
 jobs:
-  launch-without-ping:
+  launch-without-ping: # cannot connect to server
     runs-on: ubuntu-24.04-arm
 
     steps:
@@ -34,34 +34,10 @@ jobs:
 
     - name: Start services
       run: docker compose up -d
-    
-    # - name: Ping backend from frontend
-    #   run: docker exec finance-tracker-ft-frontend-1 ping -c 3 ft-backend
 
-    - name: Curl health endpoint from frontend directly # работает 
+    - name: Curl health endpoint from frontend directly 
       run: docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health
 
-    # - name: Check from outside # не работет без ping перед ним
-    #   run: curl -v http://localhost:8080/api/v1/health
-
-
-
-    
-    # - name: Curl health endpoint from frontend through nginx -работает
-    #   run: docker exec finance-tracker-ft-frontend-1 curl -v http://ft-frontend:80/api/v1/health
-      # or run: docker exec finance-tracker-ft-frontend-1 curl -v http://localhost:80/api/v1/health
-      
-
-
-    # - name: Try connect
-    #   run: |
-    #     docker exec finance-tracker-ft-frontend-1 nc -zv ft-backend 8000 
-    #     docker exec finance-tracker-ft-frontend-1 ping -c 3 ft-backend
-    #     docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health
-        
-    #     echo "TRY FROM THE OUTSIDE"
-    #     curl -v http://localhost:8080/api/v1/health 
-        
     - name: Collect logs
       uses: jwalton/gh-docker-logs@v2
       with:
@@ -72,12 +48,9 @@ jobs:
       with: 
         name: logs
         path: ./logs
-
-      # echo "TRY FROM THE INSIDE OF A CONTAINER"
-      # docker exec finance-tracker-ft-frontend-1 curl -v http://localhost/api/v1/health 
-      # docker exec finance-tracker-ft-frontend-1 curl -v http://172.18.0.2:8000/api/v1/health
+        
       
-  launch-with-ping:
+  launch-with-ping: # works
     runs-on: ubuntu-24.04-arm
     
     steps:
@@ -104,7 +77,7 @@ jobs:
       run: docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health
 
 
-  launch-with-ping-out:
+  launch-with-ping-out: # works
     runs-on: ubuntu-24.04-arm
     
     steps:
@@ -131,7 +104,7 @@ jobs:
       run: curl -v http://localhost:8080/api/v1/health
 
 
-  launch-without-ping-out:
+  launch-without-ping-out: # connection reset by peer
     runs-on: ubuntu-24.04-arm
     
     steps:
@@ -151,9 +124,65 @@ jobs:
     - name: Start services
       run: docker compose up -d
       
-    # - name: Ping backend from frontend (2)
-    #   run: docker exec finance-tracker-ft-frontend-1 ping -c 3 ft-backend
-      
     - name: Check from outside (3) 
       run: curl -v http://localhost:8080/api/v1/health
 
+
+  launch-with-outer-ping-out: 
+    runs-on: ubuntu-24.04-arm
+    
+    steps:
+    - name: Login to Docker Registry
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_LOGIN_USERNAME }}
+        password: ${{ secrets.DOCKER_LOGIN_PASSWORD }}
+    
+    - name: Checkout Compose file
+      uses: actions/checkout@v7
+      with:
+        sparse-checkout: |
+          docker-compose.yml
+        sparse-checkout-cone-mode: false
+    
+    - name: Start services
+      run: docker compose up -d
+  
+    - name: Ping frontend
+      run: ping -c 3 http://localhost:8080/api/v1/health
+    
+    - name: Check from outside (3) 
+      run: curl -v http://localhost:8080/api/v1/health
+
+
+  launch-with-outer-ping: 
+    runs-on: ubuntu-24.04-arm
+    
+    steps:
+    - name: Login to Docker Registry
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_LOGIN_USERNAME }}
+        password: ${{ secrets.DOCKER_LOGIN_PASSWORD }}
+    
+    - name: Checkout Compose file
+      uses: actions/checkout@v7
+      with:
+        sparse-checkout: |
+          docker-compose.yml
+        sparse-checkout-cone-mode: false
+    
+    - name: Start services
+      run: docker compose up -d
+  
+    - name: Ping frontend
+      run: ping -c 3 http://localhost:8080/api/v1/health
+      
+    - name: Curl health endpoint from frontend directly (3)  
+      run: docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health
+
+      
+# - name: Curl health endpoint from frontend through nginx 
+#   run: docker exec finance-tracker-ft-frontend-1 curl -v http://ft-frontend:80/api/v1/health
+  # or run: docker exec finance-tracker-ft-frontend-1 curl -v http://localhost:80/api/v1/health
+  
