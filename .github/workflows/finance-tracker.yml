@@ -149,7 +149,7 @@ jobs:
       run: docker compose up -d
 
     - name: Warm up
-      run: sleep 7
+      run: sleep 5
       # docker exec finance-tracker-ft-frontend-1 curl -v http://ft-backend:8000/api/v1/health || true
         
     - name: Health check
