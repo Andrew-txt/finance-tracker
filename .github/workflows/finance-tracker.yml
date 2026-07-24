@@ -3,10 +3,10 @@ name: Launch and Check
 on: 
   push:
     branches:
-      - new-workflow-features
+      - main
   pull_request:
     branches:
-      - new-workflow-features
+      - main
 
 jobs:
   launch-and-check: 
