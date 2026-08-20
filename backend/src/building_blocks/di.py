@@ -1,11 +1,13 @@
 from typing import Annotated
+from uuid import UUID
 
 from dependency_injector import containers, providers
 from dependency_injector.wiring import Provide, inject
-from fastapi import Depends, HTTPException, Request
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from sqlalchemy.orm import Session, sessionmaker
+from fastapi import Depends, HTTPException, Request, status
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+
+from src.building_blocks.auth.jwt_service import JWTService
 
 from src.operations.application.operation_service import OperationService
 from src.users.application.user_service import UserService
@@ -64,19 +66,20 @@ class Container(containers.DeclarativeContainer):
     )
 
 
-security = HTTPBearer()
-
 @inject
 def get_current_user_id(request: Request, user_service: Annotated[UserService, Depends(Provide[Container.user_service])]):
     auth_header = request.headers.get("Authorization")
+    unauthorized_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED, 
+        detail={"error": "invalid_credentials", "description": "Invalid credentials"}
+        )
     
-    if not auth_header or not auth_header.startswith("Bearer "):
-        raise HTTPException(
-            status_code=401, detail="Unauthorized")
-    credentials = auth_header.replace("Bearer ", "")
+    if not auth_header.startswith("Bearer "):
+        raise unauthorized_exception
     
-    user = user_service.get(user_login=credentials)
-    
-    if not user:
-        raise HTTPException(status_code=401, detail="Unauthorized")
-    return user.id
+    token = auth_header.replace("Bearer ", "")
+    payload = JWTService.decode_token(token)
+
+    if not payload: 
+        raise unauthorized_exception
+    return UUID(payload.get("user_id"))

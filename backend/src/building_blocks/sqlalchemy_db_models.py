@@ -2,10 +2,10 @@ from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
 
-from src.building_blocks.enum import CurrencyEnum, OperationType
-
 from sqlalchemy.orm import Mapped, declarative_base, mapped_column
 from sqlalchemy import ForeignKey
+
+from src.building_blocks.enum import CurrencyEnum, OperationType
 
 Base = declarative_base()
 
@@ -13,8 +13,15 @@ Base = declarative_base()
 class SQLAlchemyUser(Base):
     __tablename__ = "user"
     id: Mapped[UUID] = mapped_column(primary_key=True)
-    login: Mapped[str] = mapped_column(unique=True) ######
+    login: Mapped[str] = mapped_column(unique=True) 
     name: Mapped[str]
+
+
+class SQLAlchemyUserAuth(Base):
+    __tablename__ = "user_auth"
+    sub: Mapped[str] = mapped_column(primary_key=True)
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"), nullable=False)
+    refresh_token: Mapped[str]
 
 
 class SQLAlchemyWallet(Base):

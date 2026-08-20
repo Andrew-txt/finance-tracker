@@ -8,7 +8,7 @@ services:
       retries: 5
       start_period: 5s
     volumes:
-      - sqlite_data:/app/sqlite_data            # The sqlite_data directory containing the database data is mounted as a volume into the container at the path /app/sqlite_data. (root notes.md:16)
+      - sqlite_data:/app/sqlite_data           
     networks:
       - ft-network
     expose:
@@ -32,8 +32,3 @@ volumes:
 networks:
   ft-network:
     driver: bridge
-    enable_ipv6: false 
-
-
-    
-

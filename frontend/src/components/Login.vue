@@ -1,5 +1,12 @@
 <template>
   <h1>I did it! Log in.</h1>
+  <div class="sign-up-with"> 
+    <div class="sign-up-with-google">
+      <button class="google-btn" @click="signUpWithGoogle">
+        Sign up with Google
+      </button>
+    </div>
+  </div>
   <form class="sign-up" @submit.prevent="submitForm">
     <div class="form-group">
       <div class="field">
@@ -48,19 +55,16 @@ export default {
     }
   },
   async mounted() {
-    await this.checkBackendTMP()
+    await this.checkBackendTMP();
   },
   methods: {
     async checkBackendTMP() {
       const res = await fetch('/api/v1/health', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
-      }
-        
-      )
+      })
       const resDataTMP = await res.text()
       console.log(resDataTMP)
-
     },
     async submitForm() {
       this.v$.form.$touch()
@@ -91,9 +95,13 @@ export default {
           console.error(error)
         }
       }
+    },
+    async signUpWithGoogle() {
+      window.location.href = "/auth/google/url";
     }
   }
 }
+
 </script>
 
 <style>

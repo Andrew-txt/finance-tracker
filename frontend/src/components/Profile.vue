@@ -1,8 +1,11 @@
 <template>
     <h1>Welcome, {{ this.userName }}!</h1>
     <div class="wallets-holder">
-        <h2>Your Wallets</h2>
+        <div v-if="userWallets.length <= 0" class="empty-message">
+            You don`t have any wallets
+        </div>
         <div class="wallet-item" v-for="userWallet in userWallets" :key="userWallet.id">
+            <h2>Your Wallets</h2>
             <div class="wallet-details">
                 <div class="wallet-name">
                     <strong>{{ userWallet.name }}</strong>
@@ -31,7 +34,7 @@
 </template>
 
 <script>
-import { handleTransfer, handleTransaction } from '../utils.js';
+import { handleTransfer, handleTransaction, fetchUserData, refreshAccessToken } from '../utils.js';
 import TransactionModal from './TransactionModal.vue';
 
 export default {
@@ -40,6 +43,9 @@ export default {
     },
     data() {
         return {
+            access_token: '',
+            refresh_token: '',
+
             currentModal: {
                 isOpen: false,
                 type: '',
@@ -56,9 +62,32 @@ export default {
         }
     },
     async mounted() {
-        if (this.getUserLogin()) {
-            await this.fetchUserData()
-            await this.fetchWallets()
+        if (this.$route.query.code) { 
+            const tokens = await this.exchangeCode(this.$route.query.code)
+            if (tokens) { 
+                localStorage.setItem("refreshToken", tokens.refresh_token)
+                localStorage.setItem("accessToken", tokens.access_token)
+
+                this.$router.replace({'query': null});
+
+                await this.fetchUserProfileData(tokens.access_token);
+            } else {
+                console.log("Couldn`t fetch profile data. Unprocessable response from server.")
+            }
+        } else {
+            const accessToken = localStorage.getItem("accessToken")
+            const refreshToken = localStorage.getItem("refreshToken")
+
+            if (accessToken && refreshToken) {
+                await this.fetchUserProfileData(accessToken, refreshToken)
+            } else {
+                const possibleUserLogin = this.getUserLogin()
+                if (possibleUserLogin) {
+
+                }
+
+                this.$router.replace('/')
+            }
         }
     },
     methods: {
@@ -75,49 +104,66 @@ export default {
         },
         getUserLogin() {
             const userLogin = localStorage.getItem("userLogin")
-            if (!userLogin) { this.$router.push('/') }
+            if (!userLogin) { 
+                return null
+            } 
             return userLogin
         },
-        async fetchUserData() {
-            const userLogin = this.getUserLogin()
-            try {
-                const res = await fetch('/api/v1/users/me', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${userLogin}`,
-                        'Content-Type': 'application/json'
-                    }
-                })
-                if (res.status === 401) {
-                    localStorage.removeItem('userLogin');
-                    this.$router.push('/')
-                    return
-                }
-                if (!res.ok) { throw new Error(`Server Error: ${res.status}`) }
+        async fetchUserProfileData(accessToken, refreshToken) { 
+            const userData = await fetchUserData(accessToken);
+            
+            if (userData == null) {
+                const newAccessToken = await refreshAccessToken(refreshToken)
 
-                const data = await res.json()
-                this.userName = data.name
-            } catch (e) { console.error(e) }
+                if (newAccessToken == null) {
+                    this.$router.replace('/');
+                    localStorage.removeItem("accessToken")
+                    localStorage.removeItem("refreshToken")
+                } else {
+                    this.access_token = newAccessToken
+                }
+            } else {
+                this.userName = userData[0].name;
+                this.userWallets = userData[1];
+            }  
         },
-        async fetchWallets() {
-            const userLogin = this.getUserLogin()
-            try {
-                const res = await fetch('/api/v1/wallets', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${userLogin}`,
-                        'Content-Type': 'application/json'
+        async fetchWallets(token) {
+            if (token != null ) {
+                try {
+                    const res = await fetch('/api/v1/wallets', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    if (res.status === 401) {
+                        this.$router.replace('/')
                     }
-                })
-                if (res.status === 401) {
-                    localStorage.removeItem('userLogin');
-                    this.$router.push('/')
-                    return
-                }
-                if (!res.ok) { throw new Error(`Server Error: ${res.status}`) }
+                    if (!res.ok) { throw new Error(`Server Error: ${res.status}`) }
 
-                this.userWallets = await res.json()
-            } catch (e) { console.error(e) }
+                    this.userWallets = await res.json()
+                } catch (e) { console.log(e) }
+            } else {
+                const userLogin = this.getUserLogin()
+                try {
+                    const res = await fetch('/api/v1/wallets', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${userLogin}`,
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    if (res.status === 401) {
+                        localStorage.removeItem('userLogin');
+                        this.$router.replace('/');
+                        return
+                    }
+                    if (!res.ok) { throw new Error(`Server Error: ${res.status}`) }
+
+                    this.userWallets = await res.json()
+                } catch (e) { console.error(e) }
+            }
         },
         formatBalance(value) {
             if (!value) return '0.00'
@@ -131,20 +177,45 @@ export default {
 
             if (transactionData.type === 'income') {
                 if (await handleTransaction(userLogin, transactionData.walletName, transactionData.amount, transactionData.description, 'income')) {
-                    this.msg = "New income added"
+                    this.msg = 'New income added'
                 }
             } else if (transactionData.type === 'expense') {
                 if (await handleTransaction(userLogin, transactionData.walletName, transactionData.amount, transactionData.description, 'expense')) {
-                    this.msg = "New expense added"
+                    this.msg = 'New expense added'
                 }
             } else if (transactionData.type === 'transfer') {
                 if (await handleTransfer(userLogin, transactionData.walletName, transactionData.destinationWalletName, transactionData.amount, transactionData.description)) {
-                    this.msg = "New expense added"
+                    this.msg = 'New expense added'
                 }
             } else {
-                this.msg = "Not added"
+                this.msg = 'Not added'
             }
         },
+        async exchangeCode(code) {
+            const url = new URL(`${window.location.origin}/auth/google/tokens/access`);
+            url.search = new URLSearchParams({code : code})
+
+            try {
+                const res = await fetch(url)
+                
+                if(res.status === 401) {
+                    this.$router.replace('/')
+                }
+                if(res.ok) {
+                    const tokens = await res.json()
+                    console.log(tokens)
+                
+                    localStorage.setItem("refreshToken", tokens.refresh_token)
+                    localStorage.setItem("accessToken", tokens.access_token)
+
+                    return tokens
+                } else {
+                    return null;
+                }
+            } catch (e) {
+                console.log(e)
+            }
+        }
     }
 }
 </script>
