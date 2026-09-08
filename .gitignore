@@ -12,3 +12,6 @@ notes.md
 # Environment secret variables
 .env.*
 .env
+
+# Specific configuration files
+*.local*

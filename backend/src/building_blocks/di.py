@@ -73,13 +73,26 @@ def get_current_user_id(request: Request, user_service: Annotated[UserService, D
         status_code=status.HTTP_401_UNAUTHORIZED, 
         detail={"error": "invalid_credentials", "description": "Invalid credentials"}
         )
-    
-    if not auth_header.startswith("Bearer "):
+
+    if auth_header == None or not auth_header.startswith("Bearer "):
         raise unauthorized_exception
-    
+   
     token = auth_header.replace("Bearer ", "")
     payload = JWTService.decode_token(token)
 
     if not payload: 
         raise unauthorized_exception
     return UUID(payload.get("user_id"))
+
+
+    
+
+    
+    # if not auth_header.startswith("Bearer "):
+    #     raise unauthorized_exception
+    
+    
+
+    # if not payload: 
+    #     raise unauthorized_exception
+    

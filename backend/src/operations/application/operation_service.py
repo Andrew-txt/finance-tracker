@@ -8,12 +8,14 @@ from src.operations.application.dto import CreateOperationDTO, CreateTransferDTO
 from src.operations.domain.operation_repository import IOperationRepository
 from src.operations.domain.operation import Operation, Transfer
 from src.wallets.domain.wallet_repository import IWalletRepository
+from src.operations.domain.currency_exchanger import IExternalSourceRatesProvider
 
 
 class OperationService:
-    def __init__(self, repository: IOperationRepository, wallet_repository: IWalletRepository):
+    def __init__(self, repository: IOperationRepository, wallet_repository: IWalletRepository, currency_rates_provider: IExternalSourceRatesProvider):
         self.repository = repository
         self.wallet_repository = wallet_repository
+        self.currency_rates_provider = currency_rates_provider
 
 
     def create_operation(self, operation_data: CreateOperationDTO, user_id: UUID):
@@ -32,7 +34,7 @@ class OperationService:
         
         self.repository.save(operation)
         
-        if operation_data.type == OperationType.INCOME:
+        if operation_data.type == OperationType.INCOME:   # amount умножается на rate 
             new_balance: Decimal = wallet.balance + Decimal(operation_data.amount) ##### Decimal и int не сходятся. проверить 
             wallet.balance = new_balance
         
@@ -92,7 +94,10 @@ class OperationService:
             date_from=statistics_data.date_from,
             date_to=statistics_data.date_to,
             operations=result
-            )
+        )
+
+    def rates_source_healtheck_tmp(self) -> bool: 
+        return self.currency_rates_provider.healthcheck()
 
 
 
