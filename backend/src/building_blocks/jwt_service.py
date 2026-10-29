@@ -3,7 +3,8 @@ import jwt
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
-from src.building_blocks.auth.utils import settings
+from src.building_blocks.utils import settings
+from src.users.application.dto import UserAuthDTO
 
 
 class JWTService:
@@ -36,18 +37,17 @@ class JWTService:
             return None
 
     @staticmethod
-    def get_user_payload(token) -> dict:
+    def get_user_payload(token) -> UserAuthDTO:
         given_data = jwt.decode(
             token,
             algorithms=["RS256"],options={"verify_signature": False}
         )
-        return {
-            "name": given_data["name"],
-            "email": given_data["email"],
-            "picture": given_data["picture"],
-            "sub": given_data["sub"]
-        }
-
+        return UserAuthDTO(
+            name=given_data["name"], 
+            email=given_data["email"],
+            sub=given_data["sub"]
+        )
+    
     @staticmethod
     def is_refresh_token_valid(refresh_token: str) -> bool:
         decoded = JWTService.decode_token(refresh_token)
@@ -55,7 +55,9 @@ class JWTService:
         if decoded and decoded.get("exp") > datetime.now(timezone.utc):
             return True
         return False
-            
+
+
+
 
 
             

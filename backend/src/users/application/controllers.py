@@ -22,8 +22,6 @@ def create_user(request: CreateUserDTO, user_service: Annotated[UserService, Dep
 @inject
 def get_current_user(user_service: Annotated[UserService, Depends(Provide[Container.user_service])], current_user_id: UUID = Depends(get_current_user_id)):
     # logging.critical(f"USER_ID IN /ME CONTROLLER: {current_user_id}")
-
     user = user_service.get(user_id=current_user_id)
-    
     # logging.critical(f"USER FOUND BY GET IN /ME: {user}")
     return user

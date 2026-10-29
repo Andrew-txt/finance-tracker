@@ -7,7 +7,7 @@ from fastapi import Depends, HTTPException, Request, status
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
-from src.building_blocks.auth.jwt_service import JWTService
+from src.building_blocks.jwt_service import JWTService
 
 from src.operations.application.operation_service import OperationService
 from src.users.application.user_service import UserService

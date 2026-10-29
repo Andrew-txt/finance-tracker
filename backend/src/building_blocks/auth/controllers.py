@@ -7,11 +7,11 @@ from typing import Annotated
 
 from dependency_injector.wiring import Provide, inject
 
-from src.building_blocks.auth.jwt_service import JWTService
-from src.building_blocks.auth.utils import generate_redirect_google_uri, settings
+from src.building_blocks.jwt_service import JWTService
+from src.building_blocks.utils import generate_redirect_google_uri, settings
 from src.building_blocks.di import Container
 
-from src.users.application.dto import TokenDTO
+from src.users.application.dto import TokensPairDTO
 from src.users.application.user_service import UserService
 
 router = APIRouter(prefix="/google")
@@ -57,7 +57,7 @@ async def exchange_auth_code(user_service: Annotated[UserService, Depends(Provid
             return user_service.register_user(user_data)
 
  
-@router.post("/refresh", response_model=TokenDTO)
+@router.post("/refresh", response_model=TokensPairDTO)
 @inject
 def refresh_access_token(user_service: Annotated[UserService, Depends(Provide[Container.user_service])], refresh_token: Annotated[str, Body(embed=True)]):
     tokens = user_service.refresh_access_token(refresh_token)

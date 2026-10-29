@@ -13,7 +13,7 @@ Base = declarative_base()
 class SQLAlchemyUser(Base):
     __tablename__ = "user"
     id: Mapped[UUID] = mapped_column(primary_key=True)
-    login: Mapped[str] = mapped_column(unique=True) 
+    email: Mapped[str] = mapped_column(unique=True) 
     name: Mapped[str]
 
 

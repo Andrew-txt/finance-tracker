@@ -62,33 +62,37 @@ export default {
         }
     },
     async mounted() {
-        if (this.$route.query.code) { 
-            const tokens = await this.exchangeCode(this.$route.query.code)
-            if (tokens) { 
-                localStorage.setItem("refreshToken", tokens.refresh_token)
-                localStorage.setItem("accessToken", tokens.access_token)
 
-                this.$router.replace({'query': null});
-
-                await this.fetchUserProfileData(tokens.access_token);
-            } else {
-                console.log("Couldn`t fetch profile data. Unprocessable response from server.")
-            }
-        } else {
-            const accessToken = localStorage.getItem("accessToken")
-            const refreshToken = localStorage.getItem("refreshToken")
-
-            if (accessToken && refreshToken) {
-                await this.fetchUserProfileData(accessToken, refreshToken)
-            } else {
-                const possibleUserLogin = this.getUserLogin()
-                if (possibleUserLogin) {
-
-                }
-
-                this.$router.replace('/')
-            }
+        
+        if (this.$route.query.code) {
+            alert("RECEIVED A CODE")
         }
+        //     const tokens = await this.exchangeCode(this.$route.query.code)
+        //     if (tokens) { 
+        //         localStorage.setItem("refreshToken", tokens.refresh_token)
+        //         localStorage.setItem("accessToken", tokens.access_token)
+
+        //         this.$router.replace({'query': null});
+
+        //         await this.fetchUserProfileData(tokens.access_token);
+        //     } else {
+        //         console.log("Couldn`t fetch profile data. Unprocessable response from server.")
+        //     }
+        // } else {
+        //     const accessToken = localStorage.getItem("accessToken")
+        //     const refreshToken = localStorage.getItem("refreshToken")
+
+        //     if (accessToken && refreshToken) {
+        //         await this.fetchUserProfileData(accessToken, refreshToken)
+        //     } else {
+        //         const possibleUserLogin = this.getUserLogin()
+        //         if (possibleUserLogin) {
+
+        //     }
+
+        //         this.$router.replace('/')
+        //     }
+        // }
     },
     methods: {
         openModal(type, walletName) {
